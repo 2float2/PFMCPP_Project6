@@ -61,9 +61,8 @@ struct T
     T(T v, const char* ptr):   //1
     value(1),
     name("t")
-    {
-        std::cout << "constructor being called" << std::endl;
-    }
+    {};
+    
 
     int value;//2
     std::string name;//3
@@ -123,11 +122,11 @@ struct <#structname2#>
 
 int main()
 {
-    T <#name1#>( , );                                             //6
-    T <#name2#>( , );                                             //6
+    T t1(t1,ptr1);                                             //6
+    T t2(t2,ptr2);                                             //6
     
-    <#structName1#> f;                                            //7
-    auto* smaller = f.compare( , );                              //8
+    C f;                                            //7
+    auto* smaller = f.compare(ptr1,ptr2);                              //8
     std::cout << "the smaller one is << " << smaller->name << std::endl; //9
     
     U <#name3#>;
