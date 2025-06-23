@@ -58,14 +58,17 @@ Purpose:  This project will show you the difference between member functions and
 #include <string>
 struct T
 {
-    T(<#type name#> v, const char* <#variable name#>)   //1
-    //2
-    //3
+    T(int v, const char* n):   //1
+    value(v),name(n)
+    {}
+
+    int value;//2
+    std::string name;//3
 };
 
-struct <#structName1#>                                //4
+struct CompareStruct                                //4
 {
-    <#type name#> compare(<#type name#> a, <#type name#> b) //5
+    T* compare(T* a, T* b) //5
     {
         if( a->value < b->value ) return a;
         if( a->value > b->value ) return b;
@@ -75,29 +78,49 @@ struct <#structName1#>                                //4
 
 struct U
 {
-    float <#name1#> { 0 }, <#name2#> { 0 };
-    <#returnType#> <#memberFunction#>(<#type name#>* <#updatedValue#>)      //12
+    float v1 { 0 }, v2 { 0 };
+    float unsharedMemberFunction(float* updateValueAddress)      //12
     {
-        
+        if (updateValueAddress != nullptr)
+            {
+                std::cout << "U's v1 value: " << this->v1 << std::endl;
+                this->v1 = *updateValueAddress;
+                std::cout << "U's v1 updated value: " << this->v1 << std::endl;
+                while( std::abs(this->v2 - this->v1) > 0.001f )
+                {
+                    /*
+                     write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
+                     */
+                    this->v2 += 0.5f;
+                }
+                std::cout << "U's v2 updated value: " << this->v2 << std::endl;
+                return this->v2 * this->v1;
+            }
+            return 0.0f;
     }
 };
 
-struct <#structname2#>
+struct StaticFunctionStruct
 {
-    static <#returntype#> <#staticFunctionA#>(U* that, <#type name#>* <#updatedValue#> )        //10
+    static float staticSharedFunction(U* that, float* updateValueAddress)        //10
     {
-        std::cout << "U's <#name1#> value: " << that-><#name1#> << std::endl;
-        that-><#name1#> = <#updatedValue#>;
-        std::cout << "U's <#name1#> updated value: " << that-><#name1#> << std::endl;
-        while( std::abs(that-><#name2#> - that-><#name1#>) > 0.001f )
+
+        if (that != nullptr && updateValueAddress != nullptr)
         {
-            /*
-             write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
-             */
-            that-><#name2#> += ;
+            std::cout << "U's v1 value: " << that->v1 << std::endl;
+            that->v1 = *updateValueAddress;
+            std::cout << "U's v1 updated value: " << that->v1 << std::endl;
+            while( std::abs(that->v2 - that->v1) > 0.001f )
+            {
+                /*
+                 write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
+                 */
+                that->v2 += 0.5f;
+            }
+            std::cout << "U's v2 updated value: " << that->v2 << std::endl;
+            return that->v2 * that->v1;
         }
-        std::cout << "U's <#name2#> updated value: " << that-><#name2#> << std::endl;
-        return that-><#name2#> * that-><#name1#>;
+        return 0.0f;
     }
 };
         
@@ -117,17 +140,35 @@ struct <#structname2#>
 
 int main()
 {
-    T <#name1#>( , );                                             //6
-    T <#name2#>( , );                                             //6
+    const char* t1name = "a";
+    const char* t2name = "b";
+    T t1(5, t1name);                                             //6
+    T t2(6, t2name);                                             //6
+    T* t1ptr = &t1;
+    T* t2ptr = &t2;
     
-    <#structName1#> f;                                            //7
-    auto* smaller = f.compare( , );                              //8
-    std::cout << "the smaller one is << " << smaller->name << std::endl; //9
+    CompareStruct f;                                            //7
+    auto* smaller = f.compare(t1ptr, t2ptr);                              //8
     
-    U <#name3#>;
+    if (smaller != nullptr)
+    {
+        std::cout << "the smaller one is: " << smaller->name << std::endl; //9    
+    }
+    else
+    {
+        std::cout << "there is no smaller one, so it returned nullptr" << std::endl; //9
+    }
+    
+    U u1;
+    U* u1ptr = &u1;
     float updatedValue = 5.f;
-    std::cout << "[static func] <#name3#>'s multiplied values: " << <#structname2#>::<#staticFunctionA#>( , ) << std::endl;                  //11
+
+    if( u1ptr != nullptr)
+    {
+        std::cout << "[static func] u1's multiplied values: " << StaticFunctionStruct::staticSharedFunction(u1ptr, &updatedValue) << std::endl;                  //11
+    }
     
-    U <#name4#>;
-    std::cout << "[member func] <#name4#>'s multiplied values: " << <#name4#>.<#memberFunction#>( &updatedValue ) << std::endl;
+    
+    U u2;
+    std::cout << "[member func] u2's multiplied values: " << u2.unsharedMemberFunction( &updatedValue ) << std::endl;
 }
