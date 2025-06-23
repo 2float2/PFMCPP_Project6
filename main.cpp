@@ -120,11 +120,11 @@ struct <#structname2#>
 
 int main()
 {
-    T <#name1#>( , );                                             //6
-    T <#name2#>( , );                                             //6
+    T t1(10, "t1");                                             //6
+    T t2(20, "t2");                                             //6
     
-    <#structName1#> f;                                            //7
-    auto* smaller = f.compare( , );                              //8
+    CompareStruct f;                                            //7
+    auto* smaller = f.compare(&t1, &t2);                              //8
     std::cout << "the smaller one is << " << smaller->name << std::endl; //9
     
     U <#name3#>;
