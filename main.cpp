@@ -122,10 +122,20 @@ int main()
 {
     T t1(10, "t1");                                             //6
     T t2(20, "t2");                                             //6
+    T* t1ptr = &t1;
+    T* t2ptr = &t2;
     
     CompareStruct f;                                            //7
-    auto* smaller = f.compare(&t1, &t2);                              //8
-    std::cout << "the smaller one is << " << smaller->name << std::endl; //9
+    auto* smaller = f.compare(t1ptr, t2ptr);                              //8
+    
+    if (smaller != nullptr)
+    {
+        std::cout << "the smaller one is << " << smaller->name << std::endl; //9    
+    }
+    else
+    {
+        std::cout << "there is no smaller one, so it returned nullptr" << std::endl; //9
+    }
     
     U <#name3#>;
     float updatedValue = 5.f;
