@@ -50,48 +50,40 @@ struct CompareStruct                                //4
 struct U
 {
     float v1 { 0 }, v2 { 0 };
-    float unsharedMemberFunction(float* updateValueAddress)      //12
+    float unsharedMemberFunction(const float& updateValueReference)      //12
     {
-        if (updateValueAddress != nullptr)
-            {
-                std::cout << "U's v1 value: " << this->v1 << std::endl;
-                this->v1 = *updateValueAddress;
-                std::cout << "U's v1 updated value: " << this->v1 << std::endl;
-                while( std::abs(this->v2 - this->v1) > 0.001f )
-                {
-                    /*
-                     write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
-                     */
-                    this->v2 += 0.5f;
-                }
-                std::cout << "U's v2 updated value: " << this->v2 << std::endl;
-                return this->v2 * this->v1;
-            }
-            return 0.0f;
+        std::cout << "U's v1 value: " << this->v1 << std::endl;
+        this->v1 = updateValueReference;
+        std::cout << "U's v1 updated value: " << this->v1 << std::endl;
+        while( std::abs(this->v2 - this->v1) > 0.001f )
+        {
+            /*
+             write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
+             */
+            this->v2 += 0.5f;
+        }
+        std::cout << "U's v2 updated value: " << this->v2 << std::endl;
+        return this->v2 * this->v1;
+        
     }
 };
 
 struct StaticFunctionStruct
 {
-    static float staticSharedFunction(U* that, float* updateValueAddress)        //10
+    static float staticSharedFunction(U& uRef, const float& updateValueReference)        //10
     {
-
-        if (that != nullptr && updateValueAddress != nullptr)
+        std::cout << "U's v1 value: " << uRef.v1 << std::endl;
+        uRef.v1 = updateValueReference;
+        std::cout << "U's v1 updated value: " << uRef.v1 << std::endl;
+        while( std::abs(uRef.v2 - uRef.v1) > 0.001f )
         {
-            std::cout << "U's v1 value: " << that->v1 << std::endl;
-            that->v1 = *updateValueAddress;
-            std::cout << "U's v1 updated value: " << that->v1 << std::endl;
-            while( std::abs(that->v2 - that->v1) > 0.001f )
-            {
-                /*
-                 write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
-                 */
-                that->v2 += 0.5f;
-            }
-            std::cout << "U's v2 updated value: " << that->v2 << std::endl;
-            return that->v2 * that->v1;
+            /*
+             write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
+             */
+            uRef.v2 += 0.5f;
         }
-        return 0.0f;
+        std::cout << "U's v2 updated value: " << uRef.v2 << std::endl;
+        return uRef.v2 * uRef.v1;
     }
 };
         
@@ -131,15 +123,13 @@ int main()
     }
     
     U u1;
-    U* u1ptr = &u1;
+    U& u1Ref = u1;
     float updatedValue = 5.f;
+    float& updatedValueRef = updatedValue;
 
-    if( u1ptr != nullptr)
-    {
-        std::cout << "[static func] u1's multiplied values: " << StaticFunctionStruct::staticSharedFunction(u1ptr, &updatedValue) << std::endl;                  //11
-    }
+    std::cout << "[static func] u1's multiplied values: " << StaticFunctionStruct::staticSharedFunction(u1Ref, updatedValueRef) << std::endl;                  //11
     
     
     U u2;
-    std::cout << "[member func] u2's multiplied values: " << u2.unsharedMemberFunction( &updatedValue ) << std::endl;
+    std::cout << "[member func] u2's multiplied values: " << u2.unsharedMemberFunction( updatedValueRef ) << std::endl;
 }
