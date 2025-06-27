@@ -39,10 +39,10 @@ struct T
 
 struct CompareStruct                                //4
 {
-    T* compare(T* a, T* b) //5
+    T* compare(T& a, T& b) //5
     {
-        if( a->value < b->value ) return a;
-        if( a->value > b->value ) return b;
+        if( a.value < b.value ) return &a;
+        if( a.value > b.value ) return &b;
         return nullptr;
     }
 };
@@ -107,11 +107,11 @@ int main()
     const char* t2name = "b";
     T t1(5, t1name);                                             //6
     T t2(6, t2name);                                             //6
-    T* t1ptr = &t1;
-    T* t2ptr = &t2;
+    T& t1Ref = t1;
+    T& t2Ref = t2;
     
     CompareStruct f;                                            //7
-    auto* smaller = f.compare(t1ptr, t2ptr);                              //8
+    auto* smaller = f.compare(t1Ref, t2Ref);                              //8
     
     if (smaller != nullptr)
     {
@@ -119,7 +119,7 @@ int main()
     }
     else
     {
-        std::cout << "there is no smaller one, so it returned nullptr" << std::endl; //9
+        std::cout << "the smaller one is: nullptr because the values are equal" << std::endl;//9
     }
     
     U u1;
@@ -131,5 +131,5 @@ int main()
     
     
     U u2;
-    std::cout << "[member func] u2's multiplied values: " << u2.unsharedMemberFunction( updatedValueRef ) << std::endl;
+    std::cout << "[member func] u2's multiplied values: " << u2.unsharedMemberFunction(updatedValueRef) << std::endl;
 }
